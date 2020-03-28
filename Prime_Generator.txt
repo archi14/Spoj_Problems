@@ -1,0 +1,84 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+//[Segmented Sieve]
+int main() {
+	// initializing prime numbers so that we don't have to calculate them again and again.
+	bool p[100001];
+	memset(p,true,sizeof(p));
+	p[0]=false;
+	p[1]=false;
+	for(int i=2;i*i<100001;i++)
+	{
+		if(p[i])
+		{
+			for(int j=i*i;j<100001;j+=i)
+			{
+				p[j]=false;
+			}
+		}
+	}
+	vector<int> prime;
+	for(int i=2;i<100001;i++)
+	{
+		if(p[i])
+		{
+			prime.push_back(i);
+		}
+	}
+	int t;
+	cin>>t;
+	for(int q=0;q<t;q++)
+	{
+		long long l,r;
+		cin>>l>>r;
+		// If the ranges lies in the calculated primes then simply return them.
+		if(r<100001)
+		{
+			for(int i=2;i<=r;i++)
+			{
+				if(p[i])
+				{
+					cout<<i<<endl;
+				}
+			
+			}
+		}else
+		{	// use the previously calculated primes to elimate composite numbers in the given range.
+			bool Segprime[r-l+1];
+			memset(Segprime,true,sizeof(Segprime));
+			for(long long i=0;prime[i]*prime[i]<=r;i++)
+			{
+				long long temp = (l/prime[i])*prime[i];
+				// calculating the closest multiple of prime[i] to l. [Ex (24/7)*7 = 21]
+				long long base;
+				if(temp<l)
+				{
+					base = temp+prime[i];
+				}else
+				{
+					base = temp;
+				}
+				for(long long j=base;j<=r;j+=prime[i])
+				{
+					Segprime[j-l]=false;
+				}
+				if(base==prime[i])
+				{
+					Segprime[base-l]=true;
+				}
+					
+			}
+			for(long long i=0;i<r-l+1;i++)
+			{
+				if(Segprime[i])
+				{
+					cout<<i+l<<endl;
+				}
+				
+			}
+			
+		}
+		cout<<endl;
+	}
+}
