@@ -1,0 +1,99 @@
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+#define index 101
+int x[]={-1,1,0,0};
+int y[]={0,0,1,-1};
+
+bool isSafe(int i,int j,int n,int m,bool visited[index][index],int maze[index][index])
+{
+	if(i>0 && j>0 && i<=n && j<=m && visited[i][j]==false && maze[i][j]==1)
+	{
+		return true;
+	}
+	return false;
+}
+bool getAnswer(int i,int j,int n,int m,bool visited[index][index],int maze[index][index],int d,int sx,int sy,int k,int *beg)
+{
+	
+	if(i==sx && j==sy && *beg!=1)
+	{
+		if(d>=k)
+		{
+			return true;
+		}
+		return false;
+	}
+	if(*beg==1)
+	{
+		*beg=0;
+	}
+	if(isSafe(i,j,n,m,visited,maze))
+	{
+		visited[i][j]=true;
+		if(getAnswer(i+1,j,n,m,visited,maze,d+1,sx,sy,k,beg))
+		{
+			return true;
+		}
+		if(getAnswer(i,j+1,n,m,visited,maze,d+1,sx,sy,k,beg))
+		{
+			return true;
+		}
+		if(getAnswer(i-1,j,n,m,visited,maze,d+1,sx,sy,k,beg))
+		{
+			return true;
+		}
+		if(getAnswer(i,j-1,n,m,visited,maze,d+1,sx,sy,k,beg))
+		{
+			return true;
+		}
+		visited[i][j]=false;
+	}
+	return false;
+	
+}
+bool dfs(int sx,int sy,int n,int m,int maze[index][index],int k)
+{
+	bool visited[index][index];
+	for(int i=0;i<=n;i++)
+	{
+		for(int j=0;j<=m;j++)
+		{
+			visited[i][j]=false;
+		}
+	}
+	int beg=1;
+	return getAnswer(sx,sy,n,m,visited,maze,0,sx,sy,k,&beg);
+}
+int main() {
+	int n,m;
+	cin>>n>>m;
+	int k;
+	cin>>k;
+	int sx,sy;
+	cin>>sx>>sy;
+	int maze[index][index];
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=1;j<=m;j++)
+		{
+			char temp;
+			cin>>temp;
+			if(temp=='.')
+			{
+				maze[i][j]=1;
+			}else
+			{
+				maze[i][j]=0;
+			}
+		}
+	}
+	
+	if(dfs(sx,sy,n,m,maze,k))
+	{
+		cout<<"YES"<<endl;
+	}else
+	{
+		cout<<"NO"<<endl;
+	}
+}
